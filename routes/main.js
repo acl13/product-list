@@ -11,9 +11,7 @@ router.get("/generate-fake-data", (req, res, next) => {
     product.price = faker.commerce.price();
     product.image = "https://via.placeholder.com/250?text=Product+Image";
 
-    product.save((err) => {
-      if (err) throw err;
-    });
+    product.save();
   }
   res.end();
 });
