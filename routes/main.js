@@ -16,4 +16,22 @@ router.get("/generate-fake-data", (req, res, next) => {
   res.end();
 });
 
+router.get("/products", (req, res, next) => {
+  const perPage = 9;
+
+  // return the first page by default
+  const page = req.query.page || 1;
+
+  Product.find({})
+    .skip(perPage * page - perPage)
+    .limit(perPage)
+    .exec()
+    .then((error, products) => {
+      if (error) {
+        return console.error(error);
+      }
+      res.send(products);
+    });
+});
+
 module.exports = router;
