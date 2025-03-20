@@ -94,4 +94,26 @@ router.post("/products/:productId/reviews", (req, res) => {
   res.send({ message: "Review added" });
 });
 
+router.delete("/products/:productId", (req, res) => {
+  Product.findByIdAndDelete({ _id: req.params.productId })
+    .exec()
+    .then((error, product) => {
+      if (error) {
+        return console.error(error);
+      }
+      res.send({ message: `The following product was deleted: ${product}` });
+    });
+});
+
+router.delete("/reviews/:reviewId", (req, res) => {
+  Review.findByIdAndDelete({ _id: req.params.reviewId })
+    .exec()
+    .then((error, review) => {
+      if (error) {
+        return console.error(error);
+      }
+      res.send({ message: `The following product was deleted: ${review}` });
+    });
+});
+
 module.exports = router;
