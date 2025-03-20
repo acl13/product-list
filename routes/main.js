@@ -1,6 +1,7 @@
 const router = require("express").Router();
 const faker = require("faker");
 const { Product } = require("../models/product");
+const { Review } = require("../models/product");
 
 router.get("/generate-fake-data", (req, res) => {
   for (let i = 0; i < 90; i++) {
@@ -34,21 +35,25 @@ router.get("/products", (req, res) => {
     });
 });
 
-// router.get("/products/:productId", (req, res) => {
-//   Product.find({ _id: req.params.productId })
-//     .exec()
-//     .then((error, product) => {
-//       if (error) {
-//         return console.error(error);
-//       }
-//       res.send(product);
-//     });
-// });
+router.get("/products/:productId", (req, res) => {
+  Product.find({ _id: req.params.productId })
+    .exec()
+    .then((error, product) => {
+      if (error) {
+        return console.error(error);
+      }
+      res.send(product);
+    });
+});
 
 router.get("/products/:productId/reviews", (req, res) => {
+  const perPage = 4;
+  const page = req.query.page || 1;
+
   Product.find({ _id: req.params.productId }, { reviews: 1 })
     .populate("reviews")
-    .limit(4)
+    .skip(perPage * page - perPage)
+    .limit(perPage)
     .exec()
     .then((error, reviews) => {
       if (error) {
@@ -56,6 +61,37 @@ router.get("/products/:productId/reviews", (req, res) => {
       }
       res.send(reviews);
     });
+});
+
+router.post("/products", (req, res) => {
+  const product = new Product({
+    category: req.body.category,
+    name: req.body.name,
+    price: req.body.price,
+    image: req.body.image,
+  });
+
+  product.save();
+  res.end();
+});
+
+router.post("/products/:productId/reviews", (req, res) => {
+  const product = Product.find({ _id: req.params.productId })
+    .exec()
+    .then((error, product) => {
+      if (error) {
+        return console.error(error);
+      }
+      return product;
+    });
+  const review = new Review({
+    userName: req.body.userName,
+    text: req.body.text,
+    product: req.params.productID,
+  });
+
+  product.reviews.push(review);
+  res.send({ message: "Review added" });
 });
 
 module.exports = router;
