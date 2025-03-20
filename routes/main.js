@@ -2,7 +2,7 @@ const router = require("express").Router();
 const faker = require("faker");
 const { Product } = require("../models/product");
 
-router.get("/generate-fake-data", (req, res, next) => {
+router.get("/generate-fake-data", (req, res) => {
   for (let i = 0; i < 90; i++) {
     let product = new Product();
 
@@ -16,7 +16,7 @@ router.get("/generate-fake-data", (req, res, next) => {
   res.end();
 });
 
-router.get("/products", (req, res, next) => {
+router.get("/products", (req, res) => {
   const perPage = 9;
 
   // return the first page by default
@@ -31,6 +31,30 @@ router.get("/products", (req, res, next) => {
         return console.error(error);
       }
       res.send(products);
+    });
+});
+
+// router.get("/products/:productId", (req, res) => {
+//   Product.find({ _id: req.params.productId })
+//     .exec()
+//     .then((error, product) => {
+//       if (error) {
+//         return console.error(error);
+//       }
+//       res.send(product);
+//     });
+// });
+
+router.get("/products/:productId/reviews", (req, res) => {
+  Product.find({ _id: req.params.productId }, { reviews: 1 })
+    .populate("reviews")
+    .limit(4)
+    .exec()
+    .then((error, reviews) => {
+      if (error) {
+        return console.error(error);
+      }
+      res.send(reviews);
     });
 });
 
