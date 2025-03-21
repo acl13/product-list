@@ -2,6 +2,7 @@ const router = require("express").Router();
 const faker = require("faker");
 const { Product } = require("../models/product");
 const { Review } = require("../models/product");
+const { query } = require("express");
 
 router.get("/generate-fake-data", (req, res) => {
   for (let i = 0; i < 90; i++) {
@@ -23,7 +24,24 @@ router.get("/products", (req, res) => {
   // return the first page by default
   const page = req.query.page || 1;
 
-  Product.find({})
+  let query = {};
+  if (req.query.category) {
+    query.category = req.query.category;
+  }
+  if (req.query.query) {
+    query.$text = { $search: req.query.query };
+  }
+
+  let sort = {};
+  if (req.query.price == "highest") {
+    sort.price = 1;
+  }
+  if (req.query.price == "lowest") {
+    sort.price = -1;
+  }
+
+  Product.find(query)
+    .sort(sort)
     .skip(perPage * page - perPage)
     .limit(perPage)
     .exec()
