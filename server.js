@@ -2,7 +2,17 @@ const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 
-mongoose.connect("mongodb://localhost/products");
+async function connectToMongoDB() {
+  try {
+    await mongoose.connect("mongodb://localhost:27017/products");
+    console.log("Connected to MongoDB");
+  } catch (err) {
+    console.error("Error connecting to MongoDB:", err);
+  }
+}
+connectToMongoDB();
+
+// mongoose.connect("mongodb://localhost:27017/products");
 
 const app = express();
 
@@ -12,6 +22,16 @@ app.use(
     extended: true,
   })
 );
+
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Methods", "GET, PUT, POST, DELETE");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
+  next();
+});
 
 const mainRoutes = require("./routes/main");
 
