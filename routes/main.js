@@ -55,6 +55,17 @@ router.get("/products", (req, res) => {
     });
 });
 
+router.get("/products/count", (req, res) => {
+  Product.find({})
+    .countDocuments()
+    .then((count) => {
+      res.send({ count: count });
+    })
+    .catch((error) => {
+      return console.error(error);
+    });
+});
+
 router.get("/products/:productId", (req, res) => {
   Product.find({ _id: req.params.productId })
     .exec()

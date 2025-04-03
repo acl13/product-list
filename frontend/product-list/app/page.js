@@ -4,6 +4,7 @@ import ProductCard from "./components/ProductCard";
 import SearchBar from "./components/SearchBar";
 import SortDropdown from "./components/SortDropdown";
 import { fetchProducts } from "./store/slices/productData";
+import { getProductCount } from "./store/slices/productCount";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 
@@ -107,13 +108,15 @@ const priceOptions = [
 export default function Home() {
   const dispatch = useDispatch();
   const products = useSelector((state) => state.products.data);
+  const count = useSelector((state) => state.count.data);
 
   useEffect(() => {
     dispatch(fetchProducts());
+    dispatch(getProductCount());
   }, [dispatch]);
 
-  const logProducts = () => {
-    console.log(products);
+  const logCount = () => {
+    console.log(count);
   };
 
   return (
@@ -128,8 +131,8 @@ export default function Home() {
         <SortDropdown value="price" id="price" options={priceOptions} />
       </form>
       <div className="container">
-        <button type="button" onClick={logProducts}>
-          Log products
+        <button type="button" onClick={logCount}>
+          Log Count
         </button>
         <div className="row">
           {products &&

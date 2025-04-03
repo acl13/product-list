@@ -1,6 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-// import Product from "../../../../../models/product";
 
 export const fetchProducts = createAsyncThunk("fetchProducts", async () => {
   const response = await axios.get("http://localhost:8000/products");
@@ -23,7 +22,8 @@ export const productsSlice = createSlice({
       state.data = action.payload;
     });
     builder.addCase(fetchProducts.rejected, (state) => {
-      (state.isLoading = false), (state.error = true);
+      state.isLoading = false;
+      state.error = true;
     });
   },
 });
