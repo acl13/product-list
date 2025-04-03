@@ -1,9 +1,10 @@
 const router = require("express").Router();
 const faker = require("faker");
+const mongoose = require("mongoose");
 const Product = require("../models/product");
 const Review = require("../models/review");
-const { query } = require("express");
 
+mongoose.connect("mongodb://localhost:27017/products");
 router.get("/generate-fake-data", (req, res) => {
   for (let i = 0; i < 90; i++) {
     let product = new Product();
@@ -45,22 +46,23 @@ router.get("/products", (req, res) => {
     .skip(perPage * page - perPage)
     .limit(perPage)
     .exec()
-    .then((error, products) => {
-      if (error) {
-        return console.error(error);
-      }
+    .then((products) => {
+      console.log(products);
       res.send(products);
+    })
+    .catch((error) => {
+      return console.error(error);
     });
 });
 
 router.get("/products/:productId", (req, res) => {
   Product.find({ _id: req.params.productId })
     .exec()
-    .then((error, product) => {
-      if (error) {
-        return console.error(error);
-      }
+    .then((product) => {
       res.send(product);
+    })
+    .catch((error) => {
+      return console.error(error);
     });
 });
 
@@ -73,11 +75,11 @@ router.get("/products/:productId/reviews", (req, res) => {
     .skip(perPage * page - perPage)
     .limit(perPage)
     .exec()
-    .then((error, reviews) => {
-      if (error) {
-        return console.error(error);
-      }
+    .then((reviews) => {
       res.send(reviews);
+    })
+    .catch((error) => {
+      return console.error(error);
     });
 });
 
@@ -96,11 +98,11 @@ router.post("/products", (req, res) => {
 router.post("/products/:productId/reviews", (req, res) => {
   const product = Product.find({ _id: req.params.productId })
     .exec()
-    .then((error, product) => {
-      if (error) {
-        return console.error(error);
-      }
+    .then((product) => {
       return product;
+    })
+    .catch((error) => {
+      return console.error(error);
     });
   const review = new Review({
     userName: req.body.userName,
@@ -115,22 +117,22 @@ router.post("/products/:productId/reviews", (req, res) => {
 router.delete("/products/:productId", (req, res) => {
   Product.findByIdAndDelete({ _id: req.params.productId })
     .exec()
-    .then((error, product) => {
-      if (error) {
-        return console.error(error);
-      }
+    .then((product) => {
       res.send({ message: `The following product was deleted: ${product}` });
+    })
+    .catch((error) => {
+      return console.error(error);
     });
 });
 
 router.delete("/reviews/:reviewId", (req, res) => {
   Review.findByIdAndDelete({ _id: req.params.reviewId })
     .exec()
-    .then((error, review) => {
-      if (error) {
-        return console.error(error);
-      }
+    .then((review) => {
       res.send({ message: `The following product was deleted: ${review}` });
+    })
+    .catch((error) => {
+      return console.error(error);
     });
 });
 

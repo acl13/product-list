@@ -3,8 +3,9 @@
 import ProductCard from "./components/ProductCard";
 import SearchBar from "./components/SearchBar";
 import SortDropdown from "./components/SortDropdown";
-import { fetchAllProducts } from "./store/slices/productData";
-import { useDispatch } from "react-redux";
+import { fetchProducts } from "./store/slices/productData";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
 
 const categoryOptions = [
   { value: "", label: "Sort By Category" },
@@ -105,11 +106,16 @@ const priceOptions = [
 
 export default function Home() {
   const dispatch = useDispatch();
-  const products = dispatch(fetchAllProducts());
+  const products = useSelector((state) => state.products.data);
+
+  useEffect(() => {
+    dispatch(fetchProducts());
+  }, [dispatch]);
 
   const logProducts = () => {
     console.log(products);
   };
+
   return (
     <div className="container">
       <form className="p-2 d-flex">
@@ -126,18 +132,18 @@ export default function Home() {
           Log products
         </button>
         <div className="row">
-          {/* {products.map((product) => {
-            return (
-              <div className="col-sm" key={product.id}>
+          {products &&
+            products.map((product) => (
+              <div key={product.id} className="col-sm">
                 <ProductCard
                   category={product.category}
                   name={product.name}
                   price={product.price}
                   image={product.image}
+                  key={product.id}
                 />
               </div>
-            );
-          })} */}
+            ))}
         </div>
       </div>
     </div>
