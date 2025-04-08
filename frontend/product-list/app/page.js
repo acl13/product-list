@@ -6,7 +6,8 @@ import SortDropdown from "./components/SortDropdown";
 import { fetchProducts } from "./store/slices/productData";
 import { getProductCount } from "./store/slices/productCount";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import queryString from "query-string";
 
 const categoryOptions = [
   { value: "", label: "Sort By Category" },
@@ -109,14 +110,25 @@ export default function Home() {
   const dispatch = useDispatch();
   const products = useSelector((state) => state.products.data);
   const count = useSelector((state) => state.count.data);
+  const [pages, setPages] = useState([]);
+  const [query, setQuery] = useState("");
+  const queryParams = queryString.parse(window.location.search);
 
   useEffect(() => {
-    dispatch(fetchProducts());
+    dispatch(fetchProducts(query));
     dispatch(getProductCount());
-  }, [dispatch]);
+  }, [dispatch, query]);
 
-  const logCount = () => {
-    console.log(count);
+  useEffect(() => {
+    let numPages = [];
+    for (let i = 1; i <= Math.round(count?.count / 9); i++) {
+      numPages.push(i);
+    }
+    setPages(numPages);
+  }, [count]);
+
+  const logResult = () => {
+    console.log(queryParams);
   };
 
   return (
@@ -130,10 +142,8 @@ export default function Home() {
         />
         <SortDropdown value="price" id="price" options={priceOptions} />
       </form>
+      <button onClick={logResult}>Log</button>
       <div className="container">
-        <button type="button" onClick={logCount}>
-          Log Count
-        </button>
         <div className="row">
           {products &&
             products.map((product) => (
@@ -148,6 +158,18 @@ export default function Home() {
               </div>
             ))}
         </div>
+      </div>
+      <div className="d-flex justify-content-center">
+        {count &&
+          pages.map((page) => (
+            <button
+              key={page}
+              className="m1 btn btn-light"
+              onClick={() => setQuery(`?page=${page}`)}
+            >
+              {page}
+            </button>
+          ))}
       </div>
     </div>
   );
