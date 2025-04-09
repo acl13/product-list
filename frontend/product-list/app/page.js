@@ -112,6 +112,7 @@ export default function Home() {
   const count = useSelector((state) => state.count.data);
   const [pages, setPages] = useState([]);
   const [query, setQuery] = useState("");
+  const [userSearch, setUserSearch] = useState("");
 
   useEffect(() => {
     dispatch(fetchProducts(query));
@@ -141,6 +142,13 @@ export default function Home() {
     setQuery(`?price=${price}`);
   };
 
+  const getSearch = (search) => {
+    setUserSearch(search);
+  };
+
+  const searchProducts = () => {
+    setQuery(`?search=${userSearch}`);
+  };
   const handlePagination = (page) => {
     if (query !== "" && query.includes("page")) {
       const index = query.indexOf("&page");
@@ -157,7 +165,7 @@ export default function Home() {
   return (
     <div className="container">
       <form className="p-2 d-flex">
-        <SearchBar />
+        <SearchBar onChange={getSearch} onSearch={searchProducts} />
         <SortDropdown
           value="category"
           id="category"

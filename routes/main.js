@@ -29,8 +29,12 @@ router.get("/products", (req, res) => {
   if (req.query.category) {
     query.category = req.query.category;
   }
-  if (req.query.query) {
-    query.$text = { $search: req.query.query };
+  if (req.query.search) {
+    query.$text = {
+      $search: req.query.search,
+      $caseSensitive: false,
+      $diacriticSensitive: false,
+    };
   }
 
   let sort = {};
@@ -48,7 +52,6 @@ router.get("/products", (req, res) => {
     .exec()
     .then((products) => {
       console.log(query);
-      console.log(products);
       res.send(products);
     })
     .catch((error) => {
@@ -61,8 +64,8 @@ router.get("/products/count", (req, res) => {
   if (req.query.category) {
     query.category = req.query.category;
   }
-  if (req.query.query) {
-    query.$text = { $search: req.query.query };
+  if (req.query.search) {
+    query.$text = { $search: req.query.search };
   }
   Product.find(query)
     .countDocuments()
