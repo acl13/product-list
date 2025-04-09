@@ -34,10 +34,10 @@ router.get("/products", (req, res) => {
   }
 
   let sort = {};
-  if (req.query.price == "highest") {
+  if (req.query.price == "lowest") {
     sort.price = 1;
   }
-  if (req.query.price == "lowest") {
+  if (req.query.price == "highest") {
     sort.price = -1;
   }
 

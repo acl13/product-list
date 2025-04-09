@@ -36,8 +36,8 @@ const categoryOptions = [
 
 const priceOptions = [
   { value: "", label: "Sort By Price" },
-  { value: "lowToHigh", label: "Low to High" },
-  { value: "highToLow", label: "High to Low" },
+  { value: "lowest", label: "Low to High" },
+  { value: "highest", label: "High to Low" },
 ];
 
 // const products = [
@@ -133,11 +133,20 @@ export default function Home() {
     console.log(pages);
   };
 
-  const handleCategoryChange = (category) => {
+  const sortCategory = (category) => {
     setQuery(`?category=${category}`);
   };
 
+  const sortPrice = (price) => {
+    setQuery(`?price=${price}`);
+  };
+
   const handlePagination = (page) => {
+    if (query !== "" && query.includes("page")) {
+      const index = query.indexOf("&page");
+      setQuery(`${query.slice(0, index)}&page=${page}`);
+      return;
+    }
     if (query !== "") {
       setQuery(`${query}&page=${page}`);
       return;
@@ -153,9 +162,14 @@ export default function Home() {
           value="category"
           id="category"
           options={categoryOptions}
-          onChange={handleCategoryChange}
+          onChange={sortCategory}
         />
-        <SortDropdown value="price" id="price" options={priceOptions} />
+        <SortDropdown
+          value="price"
+          id="price"
+          options={priceOptions}
+          onChange={sortPrice}
+        />
       </form>
       <button onClick={logResult}>Log</button>
       <div className="container">
