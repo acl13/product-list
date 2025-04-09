@@ -47,6 +47,7 @@ router.get("/products", (req, res) => {
     .limit(perPage)
     .exec()
     .then((products) => {
+      console.log(query);
       console.log(products);
       res.send(products);
     })
@@ -56,7 +57,14 @@ router.get("/products", (req, res) => {
 });
 
 router.get("/products/count", (req, res) => {
-  Product.find({})
+  let query = {};
+  if (req.query.category) {
+    query.category = req.query.category;
+  }
+  if (req.query.query) {
+    query.$text = { $search: req.query.query };
+  }
+  Product.find(query)
     .countDocuments()
     .then((count) => {
       res.send({ count: count });

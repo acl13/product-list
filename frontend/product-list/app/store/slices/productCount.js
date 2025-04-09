@@ -1,10 +1,15 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-export const getProductCount = createAsyncThunk("getProductCount", async () => {
-  const response = await axios.get("http://localhost:8000/products/count");
-  return response.data;
-});
+export const getProductCount = createAsyncThunk(
+  "getProductCount",
+  async (query) => {
+    const response = await axios.get(
+      `http://localhost:8000/products/count${query}`
+    );
+    return response.data;
+  }
+);
 
 export const countSlice = createSlice({
   name: "count",

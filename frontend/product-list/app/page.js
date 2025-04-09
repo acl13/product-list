@@ -11,27 +11,27 @@ import queryString from "query-string";
 
 const categoryOptions = [
   { value: "", label: "Sort By Category" },
-  { value: "automotive", label: "Automotive" },
-  { value: "beauty", label: "Beauty" },
-  { value: "books", label: "Books" },
-  { value: "computers", label: "Computers" },
-  { value: "clothing", label: "Clothing" },
-  { value: "electronics", label: "Electronics" },
-  { value: "games", label: "Games" },
-  { value: "garden", label: "Garden" },
-  { value: "grocery", label: "Grocery" },
-  { value: "health", label: "Health" },
-  { value: "home", label: "Home" },
-  { value: "industrial", label: "Industrial" },
-  { value: "jewelry", label: "Jewelry" },
-  { value: "kids", label: "Kids" },
-  { value: "movies", label: "Moives" },
-  { value: "music", label: "Music" },
-  { value: "outdoors", label: "Outdoors" },
-  { value: "shoes", label: "Shoes" },
-  { value: "sports", label: "Sports" },
-  { value: "tools", label: "Tools" },
-  { value: "toys", label: "Toys" },
+  { value: "Automotive", label: "Automotive" },
+  { value: "Beauty", label: "Beauty" },
+  { value: "Books", label: "Books" },
+  { value: "Computers", label: "Computers" },
+  { value: "Clothing", label: "Clothing" },
+  { value: "Electronics", label: "Electronics" },
+  { value: "Games", label: "Games" },
+  { value: "Garden", label: "Garden" },
+  { value: "Grocery", label: "Grocery" },
+  { value: "Health", label: "Health" },
+  { value: "Home", label: "Home" },
+  { value: "Industrial", label: "Industrial" },
+  { value: "Jewelery", label: "Jewelery" },
+  { value: "Kids", label: "Kids" },
+  { value: "Movies", label: "Movies" },
+  { value: "Music", label: "Music" },
+  { value: "Outdoors", label: "Outdoors" },
+  { value: "Shoes", label: "Shoes" },
+  { value: "Sports", label: "Sports" },
+  { value: "Tools", label: "Tools" },
+  { value: "Toys", label: "Toys" },
 ];
 
 const priceOptions = [
@@ -112,23 +112,37 @@ export default function Home() {
   const count = useSelector((state) => state.count.data);
   const [pages, setPages] = useState([]);
   const [query, setQuery] = useState("");
-  const queryParams = queryString.parse(window.location.search);
 
   useEffect(() => {
     dispatch(fetchProducts(query));
-    dispatch(getProductCount());
+    dispatch(getProductCount(query));
   }, [dispatch, query]);
 
   useEffect(() => {
     let numPages = [];
-    for (let i = 1; i <= Math.round(count?.count / 9); i++) {
+    for (let i = 1; i <= Math.ceil(count?.count / 9); i++) {
       numPages.push(i);
     }
     setPages(numPages);
   }, [count]);
 
   const logResult = () => {
-    console.log(queryParams);
+    console.log(query);
+    console.log(products);
+    console.log(count);
+    console.log(pages);
+  };
+
+  const handleCategoryChange = (category) => {
+    setQuery(`?category=${category}`);
+  };
+
+  const handlePagination = (page) => {
+    if (query !== "") {
+      setQuery(`${query}&page=${page}`);
+      return;
+    }
+    setQuery(`&page=${page}`);
   };
 
   return (
@@ -139,6 +153,7 @@ export default function Home() {
           value="category"
           id="category"
           options={categoryOptions}
+          onChange={handleCategoryChange}
         />
         <SortDropdown value="price" id="price" options={priceOptions} />
       </form>
@@ -165,7 +180,7 @@ export default function Home() {
             <button
               key={page}
               className="m1 btn btn-light"
-              onClick={() => setQuery(`?page=${page}`)}
+              onClick={() => handlePagination(page)}
             >
               {page}
             </button>
