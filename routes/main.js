@@ -51,7 +51,6 @@ router.get("/products", (req, res) => {
     .limit(perPage)
     .exec()
     .then((products) => {
-      console.log(query);
       res.send(products);
     })
     .catch((error) => {
