@@ -135,11 +135,11 @@ export default function Home() {
   };
 
   const sortCategory = (category) => {
-    setQuery(`?category=${category}`);
+    updateQuery("category", category);
   };
 
   const sortPrice = (price) => {
-    setQuery(`?price=${price}`);
+    updateQuery("price", price);
   };
 
   const getSearch = (search) => {
@@ -147,25 +147,34 @@ export default function Home() {
   };
 
   const searchProducts = () => {
-    setQuery(`?search=${userSearch}`);
+    updateQuery("search", userSearch);
   };
+
   const handlePagination = (page) => {
-    if (query !== "" && query.includes("page")) {
-      const index = query.indexOf("&page");
-      setQuery(`${query.slice(0, index)}&page=${page}`);
+    updateQuery("page", page);
+  };
+
+  const updateQuery = (string, input) => {
+    if (query.includes(`&${string}`)) {
+      const index = query.indexOf(`&${string}`);
+      setQuery(`${query.slice(0, index)}&${string}=${input}`);
+      return;
+    }
+    if (query.includes(`?${string}`)) {
+      const index = query.indexOf(`?${string}`);
+      setQuery(`${query.slice(0, index)}?${string}=${input}`);
       return;
     }
     if (query !== "") {
-      setQuery(`${query}&page=${page}`);
+      setQuery(`${query}&${string}=${input}`);
       return;
     }
-    setQuery(`&page=${page}`);
+    setQuery(`?${string}=${input}`);
   };
 
   return (
     <div className="container">
       <form className="p-2 d-flex">
-        <SearchBar onChange={getSearch} onSearch={searchProducts} />
         <SortDropdown
           value="category"
           id="category"
@@ -178,6 +187,7 @@ export default function Home() {
           options={priceOptions}
           onChange={sortPrice}
         />
+        <SearchBar onChange={getSearch} onSearch={searchProducts} />
       </form>
       <button onClick={logResult}>Log</button>
       <div className="container">
@@ -201,7 +211,7 @@ export default function Home() {
           pages.map((page) => (
             <button
               key={page}
-              className="m1 btn btn-light"
+              className="btn btn-light"
               onClick={() => handlePagination(page)}
             >
               {page}
