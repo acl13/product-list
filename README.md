@@ -31,6 +31,8 @@ The frontend currently supports the /products route, which includes options for 
 
 - Node.js (version 14 or above)
 - npm
+- MongoDB Community Edition - follow installation guidelines for your system [here](https://www.mongodb.com/docs/manual/administration/install-community/#std-label-install-mdb-community-edition)
+- MongoDB Compass GUI - follow download instructions [here](https://www.mongodb.com/docs/compass/current/install/)
 
 ### Installation
 
@@ -47,14 +49,18 @@ The frontend currently supports the /products route, which includes options for 
    npm install
    ```
 
-### Starting the Server
+### Starting the Server & Populating Data
 
 Start the server and connect to MongoDB
-Check console to ensure that MongoDB connection is working before proceeding
 
 ```bash
  node server.js
 ```
+
+- Ensure connection string in server.js matches the connection string in MongoDB Compass
+- Navigate to localhost:8000/generate-fake-data to populate the database
+  (This will add 90 random products to the database - it is recommended to only complete this step once or twice)
+- Use MongoDB Compass to check that your data is populating correctly
 
 ### Displaying Frontend
 
