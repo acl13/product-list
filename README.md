@@ -64,11 +64,12 @@ Start the server and connect to MongoDB
 
 ### Displaying Frontend
 
-While the server is running, open a separate tab to run the frontend
+While the server is running, open a separate command line tab and run the following code to view the frontend
 
 ```bash
  cd frontend/product-list
- npm run dev
+ npm run build
+ npm run start
 ```
 
 Navigate to http://localhost:3000 to view in browser
